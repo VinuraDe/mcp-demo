@@ -63,8 +63,15 @@ export default async function handler(
 
     await transporter.sendMail({ from: user, to, subject, text: body });
     return res.json({ ok: true, provider: "smtp" });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(err);
-    return res.status(500).json({ error: err.message || "Send failed" });
+    let message = "Send failed";
+
+    if (err instanceof Error) {
+      message = err.message;
+    }
+
+    return res.status(500).json({ error: message });
   }
+
 }
