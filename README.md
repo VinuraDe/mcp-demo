@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MCP Next.js Demo
 
-## Getting Started
 
-First, run the development server:
+A minimal Model Context Protocol server implemented inside a Next.js app. Features:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Resume parsing**: simple resume parser endpoint (`/api/parseResume`) that accepts plain text and extracts experiences.
+- **Chat endpoint**: `/api/chat` — ask questions about the parsed resume (e.g. "What role did I have at my last position?")
+- **Email endpoint**: `/api/sendEmail` — send emails via SMTP (nodemailer) or SendGrid.
+- **Frontend**: `pages/index.js` — a tiny Next.js page to interact with the MCP server (upload/enter resume, chat, send email).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Quick start
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+1. Copy the files into a directory.
+2. `npm install`
+3. Create `.env` based on `.env.example` and fill SMTP or SendGrid settings.
+4. Run: `npm run dev`
+5. Open `http://localhost:3000`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## API endpoints
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `POST /api/parseResume` — body `{ text: string }` — parse and store resume in server memory session.
+- `POST /api/chat` — body `{ question: string }` — returns `{ answer: string }` answering questions about the stored resume.
+- `POST /api/sendEmail` — body `{ to, subject, body }` — sends an email via SMTP or SendGrid.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Notes
+
+
+- The resume parser is intentionally lightweight (text-based heuristics). For production, replace with a robust parser and optionally an LLM-backed QA layer.
+- The server stores the parsed resume in memory — suitable for demo. For scaling/persistence, store in a DB.
+
+
+## Deployment
+
+
+You can deploy to Vercel, Netlify, or any Node hosting. If you deploy to Vercel, add environment variables in the project settings.
